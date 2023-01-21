@@ -7,14 +7,35 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Threading;
 
 namespace TeamViewerClient
 {
     internal class NetworkHelper
     {
-        public static void Start(string ipString,int port)
+        public static string ExitCommand = "exit";
+        public static void WriteDataToServer(string text)
         {
-            var client = new TcpClient();
+            Thread thread = new Thread(() =>
+            {
+                MessageBox.Show("Exited");
+                try
+                {
+
+                var stream = client.GetStream();
+                var bw = new BinaryWriter(stream);
+                bw.Write(text);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            });
+            thread.Start();
+        }
+        private static TcpClient client = new TcpClient();
+        public static void Start(string ipString, int port)
+        {
             var ip = IPAddress.Parse(ipString);
             var ep = new IPEndPoint(ip, port);
 

@@ -47,5 +47,10 @@ namespace TeamViewerClient
         {
 
         }
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            NetworkHelper.WriteDataToServer(NetworkHelper.ExitCommand);
+        }
     }
 }
