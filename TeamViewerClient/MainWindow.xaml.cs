@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -29,13 +30,14 @@ namespace TeamViewerClient
         {
             try
             {
-                App.Current.Dispatcher.BeginInvoke(() =>
+                Thread thread = new Thread(() =>
                 {
-
-
-                    NetworkHelper.Start(IpTxtbox.Text, int.Parse(PortTxtbox.Text));
-    
-                }); ;
+                    App.Current.Dispatcher.BeginInvoke(() =>
+                        {
+                            NetworkHelper.Start(IpTxtbox.Text, int.Parse(PortTxtbox.Text));
+                        });
+                });
+                thread.Start();
             }
             catch (Exception ex)
             {
@@ -45,6 +47,7 @@ namespace TeamViewerClient
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
+            NetworkHelper.WriteDataToServer(NetworkHelper.ExitCommand);
 
         }
 

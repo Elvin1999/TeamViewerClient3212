@@ -22,9 +22,9 @@ namespace TeamViewerClient
                 try
                 {
 
-                var stream = client.GetStream();
-                var bw = new BinaryWriter(stream);
-                bw.Write(text);
+                    var stream = client.GetStream();
+                    var bw = new BinaryWriter(stream);
+                    bw.Write(text);
                 }
                 catch (Exception ex)
                 {
@@ -36,6 +36,7 @@ namespace TeamViewerClient
         private static TcpClient client = new TcpClient();
         public static void Start(string ipString, int port)
         {
+            client = new TcpClient();
             var ip = IPAddress.Parse(ipString);
             var ep = new IPEndPoint(ip, port);
 
@@ -49,10 +50,21 @@ namespace TeamViewerClient
                     {
                         while (true)
                         {
-                            var text = "I Connect";
-                            var stream = client.GetStream();
-                            var bw = new BinaryWriter(stream);
-                            bw.Write(text);
+                            try
+                            {
+                                Task.Delay(10);
+
+                                ImageHelper helper = new ImageHelper();
+                                var path = helper.TakeScreenShot();
+                                var bytes = helper.GetBytesOfImage(path);
+
+                                var stream = client.GetStream();
+                                stream.Write(bytes, 0, bytes.Length);
+
+                            }
+                            catch (Exception)
+                            {
+                            }
                         }
                     });
 
