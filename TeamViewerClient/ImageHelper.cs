@@ -12,7 +12,15 @@ namespace TeamViewerClient
     public class ImageHelper
     {
 
-        public string GetImagePath(byte[] buffer, int counter)
+        public ImageHelper()
+        {
+            var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "Images2");
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+        }
+        public string GetImagePath(byte[] buffer)
         {
             ImageConverter ic = new ImageConverter();
             var data = ic.ConvertFrom(buffer);
@@ -22,10 +30,11 @@ namespace TeamViewerClient
             {
                 Bitmap bitmap1 = new Bitmap(img);
 
-                var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "Images");
+                var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "Images2");
                 Directory.CreateDirectory(path);
-                bitmap1.Save($@"{path}\image{counter}.png");
-                var imagepath = $@"{path}\image{counter}.png";
+                var strGuid = Guid.NewGuid().ToString();
+                bitmap1.Save($@"{path}\image{strGuid}.png");
+                var imagepath = $@"{path}\image{strGuid}.png";
                 return imagepath;
             }
             else
@@ -46,15 +55,15 @@ namespace TeamViewerClient
         {
             Bitmap bmp = new Bitmap(1920, 1080);
             string path;
-            var strGuid = Guid.NewGuid().ToString();
             using (Graphics g = Graphics.FromImage(bmp))
             {
                 g.CopyFromScreen(0, 0, 0, 0, new Size(1920, 1080));
 
-                path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "Images");
-                bmp.Save(path + strGuid + ".png");  // saves the image
+                path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "Images2");
+
+                bmp.Save(path + "\\screenshot" + Guid.NewGuid().ToString() + ".png");  // saves the image
             }
-            var source = path + strGuid + ".png";
+            var source = path + "\\screenshot" + Guid.NewGuid().ToString() + ".png";
             return source;
         }
     }
